@@ -8,10 +8,11 @@ import argparse
 from board import Board
 
 parser = argparse.ArgumentParser(description = 'play a fun little game')
-parser.add_argument("mode", type = str, choices=['s','d','z'], help='s = singleplayer, d = doubleplayer')
-mode = parser.parse_args().mode
+#parser.add_argument("mode", type = str, choices=['s','d','z'], help='s = singleplayer, d = doubleplayer')
+#mode = parser.parse_args().mode
 
 os.system('clear')
+mode = 's'
 if mode == 's':
     print('singleplayer mode activated')
 elif mode == 'd':
