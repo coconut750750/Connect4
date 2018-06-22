@@ -7,12 +7,12 @@ from random import shuffle
 import argparse
 from board import Board
 
-parser = argparse.ArgumentParser(description = 'play a fun little game')
-#parser.add_argument("mode", type = str, choices=['s','d','z'], help='s = singleplayer, d = doubleplayer')
-#mode = parser.parse_args().mode
+parser = argparse.ArgumentParser(description='play a fun little game')
+parser.add_argument("mode", type=str, choices=['s', 'd', 'z'], 
+                    help='s = singleplayer, d = doubleplayer')
+mode = parser.parse_args().mode
 
 os.system('clear')
-mode = 's'
 if mode == 's':
     print('singleplayer mode activated')
 elif mode == 'd':
@@ -47,7 +47,6 @@ reset()
 
 connect.printboard()
 
-
 possiblecolumns = []
 for i in range(1,connect.columns+1):
     possiblecolumns.append(str(i))
@@ -71,12 +70,12 @@ def ask(z):
         while not(power in yesno):
             power = input("powerup? (y/n):  ")
         if turn%2 == 1 and power == 'y':
-            p1p -= 1
             pp = p1p
+            p1p -= 1
             print("you have {} powerups left".format(p1p))
         elif power == 'y':
-            p2p -= 1
             pp = p2p
+            p2p -= 1
             print("you have {} powerups left".format(p2p))        
     while power == 'y' and pp > 0:
         poweryn = True

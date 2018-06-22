@@ -10,6 +10,7 @@ from board import Board
 parser = argparse.ArgumentParser(description = 'play a fun little game')
 parser.add_argument("mode", type = str, choices=['s','d','z'], help='s = singleplayer, d = doubleplayer')
 mode = parser.parse_args().mode
+
 os.system('clear')
 if mode == 's':
     print('singleplayer mode activated')
@@ -128,32 +129,57 @@ def ask(z):
         z = input("what column? ")
     cc = int(z)
     while not(z in possiblecolumns) or connect.board[cc-1] != '   ':
-        z = input("what column?")
+        z = input("what column?s")
         try:
             cc = int(z)
         except ValueError:
             pass
             
 def askcomp():
-    if turn == 2:
-        cc = cc
+    if (turn == 2) and  connect.amount > 3:
         return
     column = randrange(1,connect.columns+1)
     while connect.board[column-1] != '   ':
         column = randrange(1,connect.columns+1)
     global cc, poweryn
     poweryn = False
-    if connect.checkthreev() != None and connect.board[connect.checkthreev()] == '   ':
-        cc = connect.checkthreev()%connect.columns+1
-    elif connect.checkthreeh() != None and connect.board[connect.checkthreeh()] == '   ':
-        cc = connect.checkthreeh()%connect.columns+1
-    elif connect.checktwo() != None and connect.board[connect.checktwo()] == '   ':
-        cc = connect.checktwo()%connect.columns+1
-    else:
+    random = False
+    if connect.checkv(0, connect.amount-1, None, 0) != None and connect.board[connect.checkv(0, connect.amount-1, None, 0)] == '   ': 
+        cc = connect.checkv(0, connect.amount-1, None, 0)%connect.columns+1
+        return
+    try:
+        if connect.checkh(0, connect.amount-1, None, 0) != None and (connect.board[connect.checkh(0, connect.amount-1, None, 0)-1] == '   ' or connect.board[connect.checkh(0 ,  connect.amount-1, None, 0)+ connect.amount-1] == '   '):
+            if connect.board[connect.checkh(0, connect.amount-1, None, 0)-1] == '   ':
+                cc = (connect.checkh(0, connect.amount-1, None, 0))%connect.columns
+            elif connect.board[connect.checkh(0 ,  connect.amount-1, None, 0)+ connect.amount-1] == '   ':
+                cc = (connect.checkh(0 ,  connect.amount-1, None, 0)+ connect.amount)%connect.columns
+            else:
+                random = True
+            if not random and cc == 0:
+                cc = connect.columns
+            if not random:
+                return
+        elif connect.checkh(0, connect.amount-2, None, 0) != None and (connect.board[connect.checkh(0, connect.amount-2, None, 0)-1] == '   ' or connect.board[connect.checkh(0 , connect.amount-2, None, 0)+ connect.amount-2] == '   '):
+            if connect.board[connect.checkh(0, connect.amount-2, None, 0)-1] == '   ':
+                cc = (connect.checkh(0, connect.amount-2, None, 0))%connect.columns
+                print(cc)
+            elif connect.board[connect.checkh(0 ,  connect.amount-2, None, 0)+ connect.amount-2] == '   ':
+                cc = (connect.checkh(0 ,  connect.amount-2, None, 0)+ connect.amount-2)%connect.columns+1
+            else:
+                random = True
+            if not random and cc == 0:
+                cc = connect.columns
+            if not random:
+                return
+    except IndexError:
+        random = True
+    random = True
+    if random:
         cc = column
         
 while turn<totalturns and mode != 'z':
     while not(enable in yesno):
+        print("you need to connect {} to win".format(connect.amount))
         enable = input("enable powerups? (y/n):  ")
         if enable in yesno and enable == yesno[0]:
             print("  each player gets {} powerups".format(int(connect.area/10)))
@@ -189,14 +215,14 @@ while turn<totalturns and mode != 'z':
     else:
         connect.printboard()
         
-    if connect.checkwin() or turn == totalturns:
-        if connect.checkwin() and turn%2==1 and enable == 'n':
+    if connect.check(connect.amount) or turn == totalturns:
+        if connect.check(connect.amount) and turn%2==1 and enable == 'n':
             print("blue guy wins!!!")
-        elif connect.checkwin() and enable == 'n':
+        elif connect.check(connect.amount) and enable == 'n':
             print("red guy wins!!!")
-        elif enable == 'y' and connect.checkwin() == '\033[034m o \033[00m':
+        elif enable == 'y' and connect.check(connect.amount) == '\033[034m o \033[00m':
             print("blue guy wins!!!")
-        elif enable == 'y' and connect.checkwin() == '\033[031m o \033[00m':
+        elif enable == 'y' and connect.check(connect.amount) == '\033[031m o \033[00m':
             print("red guy wins!!!")
         else:
             print("blue and red guy win and lose")
@@ -219,7 +245,7 @@ print("good bye. see you later.")
 #SECRET AREA
 
 if mode == 'z':
-    print('secret liar of mr. wang infiltrated...')
+    print('secret liar of mr. coconut infiltrated...')
     time.sleep(.5)
     reset()
 
