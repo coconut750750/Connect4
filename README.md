@@ -18,3 +18,6 @@ Powerups include:
 * destroying (bombing) a token
 * randomizing a row
 
+![screengrab](image.png)
+
+
